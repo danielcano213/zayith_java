@@ -12,3 +12,8 @@ def get_all_medicos():
 def get_all_pacientes():
     pacientes = Paciente.query.all()
     return render_template("pacientes.html" , pacientes=pacientes )
+
+@app.route("/consultorios")
+def get_all_consultorios():
+    consultorios = Consultorio.query.all()
+    return render_template("consultorios.html" , consultorios=consultorios)
