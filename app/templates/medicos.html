@@ -16,6 +16,7 @@
                 <th>tipo de identificacion</th>
                 <th>numero de identificacion</th>
                 <th>registro medico</th>
+                <th>ver detalles</th>
             
             </tr>
         </thead>
@@ -28,6 +29,11 @@
                     <td> {{ medico.tipo_identificacion }} </td>
                     <td> {{ medico.numero_identificacion }} </td>
                     <td> {{ medico.registro_medico }} </td>
+                    <td>
+                        <a href="/medicos/{{  medico.id  }}">
+                            Ver detalles
+                        </a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
