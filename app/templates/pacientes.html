@@ -1,37 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UFT-8">
-    <meta name="viewport" content="width=device-widht, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Pacientes</title>
 </head>
-</body>
-    <h1>Lista de Pacientes </h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Apellidos</th>
-                <th>tipo identificacion</th>
-                <th>numero identificacion</th>
-                <th>Altura</th>
-                <th>tipo sangre</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for p in pacientes%}
+<body>
+        <h1 class="text-center mb-4"> Lista de Pacientes </h1>
+        <table class="table table-striped">
+            <thead class="thead-dark">
                 <tr>
-                    <td> {{ p.nombre }} </td>
-                    <td> {{ p.apellidos }} </td>
-                    <td> {{ p.tipo_identificacion}} </td>
-                    <td> {{ p.numero_identificacion }} </td>
-                    <td> {{ p.altura }} </td>
-                    <td> {{ p.tipo_sangre }} </td>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                    <th>Tipo de identificación</th>
+                    <th>Número de identificación</th>
+                    <th>Altura</th>
+                    <th>Tipo de sangre</th>
+                    <th>Ver detalles</th>
+                    <th>Actualizar</th>
+                    <th>Eliminar</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-        <tfoot></tfoot>
+            </thead>
+            <tbody>
+                {% for paciente in pacientes %}
+                    <tr>
+                        <td> {{ paciente.nombre }} </td>
+                        <td> {{ paciente.apellido }} </td>
+                        <td> {{ paciente.tipo_identificacion }} </td>
+                        <td> {{ paciente.numero_identificacion }} </td>
+                        <td> {{ paciente.altura }} </td>
+                        <td> {{ paciente.tipo_sangre }} </td>
+                        <td>
+                            <a href="/pacientes/{{ paciente.id }}" class="btn btn-info">
+                                Ver Detalles
+                            </a>
+                        </td>
+                        <td> 
+                            <a href="/pacientes/update/{{ paciente.id }}" class="btn btn-warning">
+                                Actualizar
+                            </a>
+                        </td>
+                        <td> 
+                            <a href="/pacientes/delete/{{ paciente.id }}" class="btn btn-danger">
+                                Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-    </table>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-info">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            color: #495057;
+            padding: 10px;
+            text-align: left;
+        }
+        .table td {
+            padding: 10px;
+            border: 1px solid #dee2e6;
+        }
+        .btn {
+            padding: 5px 10px;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .btn-info {
+            background-color: #000000;
+        }
+        .btn-warning {
+            background-color: #000000;
+        }
+        .btn-danger {
+            background-color: #000000;
+        }
+    </style>    
+        <div class="container mt-5">
+            <div class="mb-4">
+                <a href="/pacientes" class="btn btn-info">Pacientes</a>
+                <a href="/medicos" class="btn btn-info">Médicos</a>
+                <a href="/consultorios" class="btn btn-info">Consultorios</a>
+                <a href="/citas" class="btn btn-info">Citas</a>
+                <a href="/pacientes/create" class="btn btn-primary">Crear Paciente</a>
+            </div>
 </body>
 </html>

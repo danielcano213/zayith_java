@@ -3,15 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Detalle de Cita</title>
+
 </head>
 <body>
-    <h1>Detalle de la Cita </h1>
-    <u1>
-        <li> Fecha: {{ cita.fecha }}</li>
-        <li> Paciente: {{ cita.paciente.id }}</li>
-        <li> Medico: {{ cita.medico.id  }}</li>
-        <li> Valor: {{ cita.valor}}</li>
-    </u1>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="display-4 mt-5">Detalle de cita</h1>
+                <ul class="list-group mt-4">
+                    <li class="list-group-item">Fecha: {{ cit.fecha }}</li>
+                    <li class="list-group-item">Paciente: {{ cit.paciente_id }}</li>
+                    <li class="list-group-item">Médico: {{ cit.medico_id }}</li>
+                    <li class="list-group-item">Consultorio: {{ cit.consultorio_id }}</li>
+                    <li class="list-group-item">Valor: {{ cit.valor }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
