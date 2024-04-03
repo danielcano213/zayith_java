@@ -56,14 +56,12 @@ def create_medico():
     if( request.method == "GET" ):
         # ENTRAR AL NAVEGADOR CON https://localhost/
         especialidades = [
-            "Cardiologia",
-            "Pediatria",
-            "Oncologia"
+            "Cardiologia","Pediatria","Psicologia","Dermatologia","Medico General"
         ]
         return render_template("medico_form.html",
                             especialidades = especialidades)
     
-#### Al PRESIONAR GUARDAR LOS DATOS QUEDAN GUARDADOR
+#### Al PRESIONAR GUARDAR, LOS DATOS QUEDAN GUARDADOS
     
     elif(request.method == "POST"):
         new_medico = Medico(nombre = request.form["nombre"],
@@ -73,19 +71,16 @@ def create_medico():
                             registro_medico = request.form["rm"],
                             especialidad = request.form["es"]
                             )
-        #añadirlo a la sesion sqlalchemy
+        #SE AÑADE A SQL ALCHEMY
         db.session.add(new_medico)
         db.session.commit()
-        flash("medico registrado correctamente")
+        flash("El Medico A Sido Creado")
         return redirect("/medicos")
 
 @app.route('/medicos/update/<int:id>', methods=['GET','POST'])
 def update_medico(id):
     especialidades = [
-           "Cardiologia",
-            "Pediatria",
-            "Oncologia",
-            "Urologa"
+           "Cardiologia","Pediatria","Psicologia","Dermatologia","Medico General"
     ]
     medico_update = Medico.query.get(id)
     
@@ -101,6 +96,7 @@ def update_medico(id):
         medico_update.registro_medico = request.form['rm']
         medico_update.especialidad = request.form['es']
         db.session.commit()
+        flash('El Medico A Sido Actualizado')
         return redirect('/medicos')
     
 @app.route('/medicos/delete/<int:id>', methods=['GET','POST'])
@@ -108,18 +104,14 @@ def delete_medico(id):
     medico_delete = Medico.query.get(id)
     db.session.delete(medico_delete)
     db.session.commit()
+    flash('El Medico  A Sido Eliminado')
     return redirect('/medicos')
     
 @app.route("/pacientes/create" , methods = [ "GET" , "POST"] )
 def create_paciente():
     if( request.method == "GET" ):
         tipo_sangres = [
-            "A+",
-            "O+",
-            "A-",
-            "O-",
-            "AB+",
-            "AB-"
+            "A+", "B+", "O-", "A-", "B+", "O-","AB+","AB-"
         ]
         return render_template("paciente_form.html",
                             tipo_sangres = tipo_sangres)
@@ -134,18 +126,13 @@ def create_paciente():
                             )
         db.session.add(new_paciente)
         db.session.commit()
-        flash('Paciente creado')
+        flash('El Paciente A Sido creado')
         return redirect('/pacientes')
     
 @app.route('/paciente/update/<int:id>', methods=['GET','POST'])
 def update_paciente(id):
     tipo_sangres = [
-            "A+",
-            "O+",
-            "A-",
-            "O-",
-            "AB+",
-            "AB-"
+            "A+", "B+", "O-", "A-", "B+", "O-","AB+","AB-"
         ]
     paciente_update = Paciente.query.get(id)
     
@@ -161,7 +148,7 @@ def update_paciente(id):
         paciente_update.altura = request.form['al']
         paciente_update.tipo_sangre = request.form['rh']
         db.session.commit()
-        flash('Paciente Actualizado')
+        flash('El Paciente A Sido Actualizado')
         return redirect('/pacientes')
 
 @app.route('/pacientes/delete/<int:id>', methods=['GET','POST'])
@@ -169,7 +156,7 @@ def delete_paciente(id):
     paciente_delete = Paciente.query.get(id)
     db.session.delete(paciente_delete)
     db.session.commit()
-    flash('Paciente Eliminado')
+    flash('El Paciente A Sido  Eliminado')
     return redirect('/paciente')
 
 @app.route("/consultorios/create" , methods = [ "GET" , "POST"] )
@@ -182,7 +169,7 @@ def create_consultorio():
         new_consultorio = Consultorio( numero = request.form["nu"])                            
     db.session.add(new_consultorio)
     db.session.commit()
-    flash('Consultorio creado')
+    flash('El Consultorio A Sido creado')
     return redirect('/consultorios')
 
 @app.route('/consultorios/update/<int:id>', methods=['GET','POST'])
@@ -193,7 +180,7 @@ def update_consultorio(id):
     elif(request.method == 'POST'):
         consultorio_update.numero = request.form['num']
         db.session.commit()
-        flash('Consultorio Actualizado')
+        flash('El Consultorio A Sido Actualizado')
         return redirect('/consultorios')
 
 @app.route('/consultorios/delete/<int:id>', methods=['GET','POST'])
@@ -201,16 +188,14 @@ def delete_consultorio(id):
     consultorio_delete = Consultorio.query.get(id)
     db.session.delete(consultorio_delete)
     db.session.commit()
-    flash('Consultorio Eliminado')
+    flash('El Consultorio A Sido Eliminado')
     return redirect('/consultorios')
 
 @app.route("/citas/create", methods = ['GET', 'POST'])
 def show_create_cita():
     if(request.method == 'GET'):
         valores = [
-           4500,
-            0,
-            20000]
+           4500, 3500, 2500]
         fecha = datetime.now()
         pacientes = Paciente.query.all()
         medicos = Medico.query.all()
@@ -227,16 +212,14 @@ def show_create_cita():
                         valor = request.form['val'])
         db.session.add(new_cita)
         db.session.commit() 
-        flash('cita creada')
+        flash('La Cita A Sido Creada')
         return redirect('/citas')
 
 
 @app.route('/citas/update/<int:id>', methods=['GET','POST'])
 def update_cita(id):
     valores = [
-           4500,
-            0,
-            20000]
+           4500, 3500, 2500]
     cita_update = Cita.query.get(id)
     
     
@@ -255,7 +238,7 @@ def update_cita(id):
         cita_update.consultorio_id = request.form['con']
         cita_update.valor = request.form['val']
         db.session.commit()
-        flash('Cita Actualizado')
+        flash('La Cita A Sido Actualizada')
         return redirect('/citas')
     
 @app.route('/citas/delete/<int:id>', methods=['GET','POST'])
@@ -263,7 +246,7 @@ def delete_cita(id):
     cita_delete = Cita.query.get(id)
     db.session.delete(cita_delete)
     db.session.commit()
-    flash('Cita Eliminado')
+    flash('La Cita A Sido Eliminada')
     return redirect('/citas')
 
         
