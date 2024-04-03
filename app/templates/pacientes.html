@@ -4,62 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Pacientes</title>
+    <style>
+        
+    </style>
 </head>
 <body>
-        <h1 class="text-center mb-4"> Lista de Pacientes </h1>
-        <table class="table table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Nombre</th>
-                    <th>Apellidos</th>
-                    <th>Tipo de identificación</th>
-                    <th>Número de identificación</th>
-                    <th>Altura</th>
-                    <th>Tipo de sangre</th>
-                    <th>Ver detalles</th>
-                    <th>Actualizar</th>
-                    <th>Eliminar</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for paciente in pacientes %}
-                    <tr>
-                        <td> {{ paciente.nombre }} </td>
-                        <td> {{ paciente.apellido }} </td>
-                        <td> {{ paciente.tipo_identificacion }} </td>
-                        <td> {{ paciente.numero_identificacion }} </td>
-                        <td> {{ paciente.altura }} </td>
-                        <td> {{ paciente.tipo_sangre }} </td>
-                        <td>
-                            <a href="/pacientes/{{ paciente.id }}" class="btn btn-info">
-                                Ver Detalles
-                            </a>
-                        </td>
-                        <td> 
-                            <a href="/pacientes/update/{{ paciente.id }}" class="btn btn-warning">
-                                Actualizar
-                            </a>
-                        </td>
-                        <td> 
-                            <a href="/pacientes/delete/{{ paciente.id }}" class="btn btn-danger">
-                                Eliminar
-                            </a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="alert alert-info">
-                    {% for message in messages %}
-                        {{ message }}
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
+    <div>
+        <h1> Lista de Pacientes </h1>
     </div>
+
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Tipo de identificación</th>
+                <th>numero de identificación</th>
+                <th>altura</th>
+                <th>tipo_sangre</th>
+                <th>Ver detalles</th>
+                <th>Actualizar</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paciente in pacientes %}
+                <tr>
+                    <td> {{ paciente.nombre }} </td>
+                    <td> {{ paciente.apellido }} </td>
+                    <td> {{ paciente.tipo_identificacion }} </td>
+                    <td> {{ paciente.numero_identificacion }} </td>
+                    <td> {{ paciente.altura }} </td>
+                    <td> {{ paciente.tipo_sangre }} </td>
+                    <td>
+                        <a href="/pacientes/{{ paciente.id }}">
+                            Ver Detalles
+                        </a>
+                    </td>
+                    <td>
+                        <a href="/paciente/update/{{ paciente.id }}">
+                            Actualizar
+                        </a>
+                    </td>
+                    <td>
+                        <a href="/pacientes/{{ paciente.id }}">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -102,7 +108,7 @@
                 <a href="/medicos" class="btn btn-info">Médicos</a>
                 <a href="/consultorios" class="btn btn-info">Consultorios</a>
                 <a href="/citas" class="btn btn-info">Citas</a>
-                <a href="/pacientes/create" class="btn btn-primary">Crear Paciente</a>
+                <a href="pacientes/create" class="btn btn-info">Nuevo Paciente</a>
             </div>
 </body>
 </html>
