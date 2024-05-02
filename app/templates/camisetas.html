@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Camisetas</title>
+</head>
+<body>
+    <h1>Lista de Camisetas</h1>
+    <ul>
+        {% for camiseta in camisetas %}
+            <li>
+                <a href="{{ url_for('get_camiseta_by_id', id=camiseta.id) }}">
+                    {{ camiseta.marca }} - {{ camiseta.color }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

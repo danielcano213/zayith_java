@@ -1,28 +1,26 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-##importr config 
 from .config import Config
-
-##crear objeto de app
+# Crear objeto de la aplicación Flask
 app = Flask(__name__)
 
-##configura el objeto flask
+# Configurar la aplicación Flask
 app.config.from_object(Config)
 
-##objeto SQLAlchemy
+# Crear objeto SQLAlchemy
 db = SQLAlchemy(app)
 
-#objeto para las migraciones
+# Objeto para las migraciones
 migrate = Migrate(app, db)
 
-#importar las rutas
+# Importar las rutas
+from . import routes
 
-from . import routes 
+# Importar los modelos
+from .models import Camiseta, Pantalon, Chaqueta, Cliente, Pedido, Tienda, InventarioTienda, Envio, Pago, Proveedor
 
-#importar los modelos
-from .models import Medico, Paciente, Consultorio, Cita
-
-##ejecutar el objeto
-if __name__== "__main__":
+# Ejecutar la aplicación si se llama directamente
+if __name__ == "__main__":
     app.run()
+

@@ -1,253 +1,117 @@
-from . import app,db
-from .models import Medico
-from .models import Paciente
-from .models import Consultorio
-from .models import Cita
+from . import app, db, Flask
+from .models import Camiseta, Pantalon, Chaqueta, Cliente, Pedido, Tienda, InventarioTienda, Envio, Pago, Proveedor
 from flask import render_template, request, flash, redirect
 from datetime import datetime
 
+# Rutas para las camisetas
+@app.route("/camisetas")
+def get_all_camisetas():
+    camisetas = Camiseta.query.all()
+    return render_template("camisetas.html", camisetas=camisetas)
 
-#CREACION DE RUTAS PARA MEDICOS PACIENTES CITAS Y CONSULTORIOS
-@app.route("/medicos")
-def get_all_medicos():
-    medicos = Medico.query.all()
-    return render_template("medicos.html" , medicos=medicos)
-@app.route("/medicos/<int:id>")
-def get_medico_by_id(id):
-    medico = Medico.query.get(id)
-    return render_template("medico.html",
-                            med = medico )
+@app.route("/camisetas/<int:id>")
+def get_camiseta_by_id(id):
+    camiseta = Camiseta.query.get(id)
+    return render_template("camiseta.html", cam=camiseta)
 
-@app.route("/pacientes")
-def get_all_pacientes():
-    pacientes = Paciente.query.all()
-    return render_template("pacientes.html" , pacientes=pacientes)
-@app.route("/pacientes/<int:id>")
-def get_paciente_by_id(id):
-    paciente = Paciente.query.get(id)
-    return render_template("paciente.html",
-                           pac = paciente )
+# Rutas para los pantalones
+@app.route("/pantalones")
+def get_all_pantalones():
+    pantalones = Pantalon.query.all()
+    return render_template("pantalones.html", pantalones=pantalones)
 
-@app.route("/consultorios")
-def get_all_consultorios():
-    consultorios = Consultorio.query.all()
-    return render_template("consultorios.html" , consultorios=consultorios)
-@app.route("/consultorios/<int:id>")
-def get_consultorio_by_id(id):
-    consultorio = Consultorio.query.get(id)
-    return render_template("consultorio.html",
-                           con = consultorio)
+@app.route("/pantalones/<int:id>")
+def get_pantalon_by_id(id):
+    pantalon = Pantalon.query.get(id)
+    return render_template("pantalon.html", pant=pantalon)
 
-@app.route("/citas")
-def get_all_citas():
-    citas = Cita.query.all()
-    return render_template("citas.html" , citas=citas)
-@app.route("/citas/<int:id>")
-def get_cita_by_id(id):
-    cita = Cita.query.get(id)
-    return render_template("cita.html",
-                           cit = cita)
+# Rutas para las chaquetas
+@app.route("/chaquetas")
+def get_all_chaquetas():
+    chaquetas = Chaqueta.query.all()
+    return render_template("chaquetas.html", chaquetas=chaquetas)
 
+@app.route("/chaquetas/<int:id>")
+def get_chaqueta_by_id(id):
+    chaqueta = Chaqueta.query.get(id)
+    return render_template("chaqueta.html", cha=chaqueta)
 
-#CREAR RUTA PARA CREAR, ACTUALIZAR Y ELIMINAR MEDICOS PACIENTES CITAS CONSULTORIOS
-@app.route("/medicos/create" , methods = [ "GET" , "POST"] )
-def create_medico():
-    # CREAR FORMULARIO GET : GET
-    if( request.method == "GET" ):
-        # ENTRAR AL NAVEGADOR CON https://localhost/
-        especialidades = [
-            "Cardiologia","Pediatria","Psicologia","Dermatologia","Medico General"
-        ]
-        return render_template("medico_form.html",
-                            especialidades = especialidades)
-    
-#### Al PRESIONAR GUARDAR, LOS DATOS QUEDAN GUARDADOS
-    
-    elif(request.method == "POST"):
-        new_medico = Medico(nombre = request.form["nombre"],
-                            apellido = request.form["apellidos"],
-                            tipo_identificacion = request.form["ti"],
-                            numero_identificacion = request.form["ni"],
-                            registro_medico = request.form["rm"],
-                            especialidad = request.form["es"]
-                            )
-        #SE AÑADE A SQL ALCHEMY
-        db.session.add(new_medico)
-        db.session.commit()
-        flash("El Medico A Sido Creado")
-        return redirect("/medicos")
+# Rutas para los clientes
+@app.route("/clientes")
+def get_all_clientes():
+    clientes = Cliente.query.all()
+    return render_template("clientes.html", clientes=clientes)
 
-@app.route('/medicos/update/<int:id>', methods=['GET','POST'])
-def update_medico(id):
-    especialidades = [
-           "Cardiologia","Pediatria","Psicologia","Dermatologia","Medico General"
-    ]
-    medico_update = Medico.query.get(id)
-    
-    if(request.method == 'GET'):
-        return render_template('medico_update.html' , 
-                                medico_update = medico_update, 
-                                especialidades=especialidades)
-    elif(request.method == 'POST'):
-        medico_update.nombre = request.form['nombre']
-        medico_update.apellido = request.form['apellidos']
-        medico_update.tipo_identificacion = request.form['ti']
-        medico_update.numero_identificacion = request.form['ni']
-        medico_update.registro_medico = request.form['rm']
-        medico_update.especialidad = request.form['es']
-        db.session.commit()
-        flash('El Medico A Sido Actualizado')
-        return redirect('/medicos')
-    
-@app.route('/medicos/delete/<int:id>', methods=['GET','POST'])
-def delete_medico(id):
-    medico_delete = Medico.query.get(id)
-    db.session.delete(medico_delete)
-    db.session.commit()
-    flash('El Medico  A Sido Eliminado')
-    return redirect('/medicos')
-    
-@app.route("/pacientes/create" , methods = [ "GET" , "POST"] )
-def create_paciente():
-    if( request.method == "GET" ):
-        tipo_sangres = [
-            "A+", "B+", "O-", "A-", "B+", "O-","AB+","AB-"
-        ]
-        return render_template("paciente_form.html",
-                            tipo_sangres = tipo_sangres)
-    
-    elif(request.method == "POST"):
-        new_paciente = Paciente(nombre = request.form["nombre"],
-                            apellido = request.form["apellido"],
-                            tipo_identificacion = request.form["ti"],
-                            numero_identificacion = request.form["ni"],
-                            altura = request.form["al"],
-                            tipo_sangre = request.form["rh"]
-                            )
-        db.session.add(new_paciente)
-        db.session.commit()
-        flash('El Paciente A Sido creado')
-        return redirect('/pacientes')
-    
-@app.route('/paciente/update/<int:id>', methods=['GET','POST'])
-def update_paciente(id):
-    tipo_sangres = [
-            "A+", "B+", "O-", "A-", "B+", "O-","AB+","AB-"
-        ]
-    paciente_update = Paciente.query.get(id)
-    
-    if(request.method == 'GET'):
-        return render_template('paciente_update.html' , 
-                                paciente_update = paciente_update, 
-                                tipo_sangres=tipo_sangres)
-    elif(request.method == 'POST'):
-        paciente_update.nombre = request.form['nombre']
-        paciente_update.apellido = request.form['apellido']
-        paciente_update.tipo_identificacion = request.form['ti']
-        paciente_update.numero_identificacion = request.form['ni']
-        paciente_update.altura = request.form['al']
-        paciente_update.tipo_sangre = request.form['rh']
-        db.session.commit()
-        flash('El Paciente A Sido Actualizado')
-        return redirect('/pacientes')
+@app.route("/clientes/<int:id>")
+def get_cliente_by_id(id):
+    cliente = Cliente.query.get(id)
+    return render_template("cliente.html", cli=cliente)
 
-@app.route('/pacientes/delete/<int:id>', methods=['GET','POST'])
-def delete_paciente(id):
-    paciente_delete = Paciente.query.get(id)
-    db.session.delete(paciente_delete)
-    db.session.commit()
-    flash('El Paciente A Sido  Eliminado')
-    return redirect('/paciente')
+# Rutas para los pedidos
+@app.route("/pedidos")
+def get_all_pedidos():
+    pedidos = Pedido.query.all()
+    return render_template("pedidos.html", pedidos=pedidos)
 
-@app.route("/consultorios/create" , methods = [ "GET" , "POST"] )
-def create_consultorio():
-    if( request.method == "GET" ):
-        numero = Consultorio.query.all()
-        return render_template("consultorio_form.html", numero = numero)
-    elif(request.method == "POST"):
-        numero = int(request.form["nu"])
-        new_consultorio = Consultorio( numero = request.form["nu"])                            
-    db.session.add(new_consultorio)
-    db.session.commit()
-    flash('El Consultorio A Sido creado')
-    return redirect('/consultorios')
+@app.route("/pedidos/<int:id>")
+def get_pedido_by_id(id):
+    pedido = Pedido.query.get(id)
+    return render_template("pedido.html", ped=pedido)
 
-@app.route('/consultorios/update/<int:id>', methods=['GET','POST'])
-def update_consultorio(id):
-    consultorio_update = Consultorio.query.get(id)
-    if(request.method == 'GET'):
-        return render_template('consultorio_update.html', consultorio_update = consultorio_update)
-    elif(request.method == 'POST'):
-        consultorio_update.numero = request.form['num']
-        db.session.commit()
-        flash('El Consultorio A Sido Actualizado')
-        return redirect('/consultorios')
+# Rutas para las tiendas
+@app.route("/tiendas")
+def get_all_tiendas():
+    tiendas = Tienda.query.all()
+    return render_template("tiendas.html", tiendas=tiendas)
 
-@app.route('/consultorios/delete/<int:id>', methods=['GET','POST'])
-def delete_consultorio(id):
-    consultorio_delete = Consultorio.query.get(id)
-    db.session.delete(consultorio_delete)
-    db.session.commit()
-    flash('El Consultorio A Sido Eliminado')
-    return redirect('/consultorios')
+@app.route("/tiendas/<int:id>")
+def get_tienda_by_id(id):
+    tienda = Tienda.query.get(id)
+    return render_template("tienda.html", tie=tienda)
 
-@app.route("/citas/create", methods = ['GET', 'POST'])
-def show_create_cita():
-    if(request.method == 'GET'):
-        valores = [
-           4500, 3500, 2500]
-        fecha = datetime.now()
-        pacientes = Paciente.query.all()
-        medicos = Medico.query.all()
-        consultorios = Consultorio.query.all()
-        return render_template("cita_form.html" , pacientes=pacientes , medicos=medicos, consultorios=consultorios, valores = valores, fecha = fecha )
-    
-    
-    elif(request.method == 'POST'):
-        fecha = datetime.strptime(request.form['fecha'], "%Y-%m-%dT%H:%M")
-        new_cita = Cita(fecha=fecha,
-                        paciente_id = request.form['pa'],
-                        medico_id = request.form['med'],
-                        consultorio_id = request.form['con'],
-                        valor = request.form['val'])
-        db.session.add(new_cita)
-        db.session.commit() 
-        flash('La Cita A Sido Creada')
-        return redirect('/citas')
+# Rutas para el inventario de tiendas
+@app.route("/inventario_tienda")
+def get_all_inventario_tienda():
+    inventario = InventarioTienda.query.all()
+    return render_template("inventario_tienda.html", inventario=inventario)
 
+@app.route("/inventario_tienda/<int:id>")
+def get_inventario_tienda_by_id(id):
+    inventario = InventarioTienda.query.get(id)
+    return render_template("inventario_tiendas.html", inv=inventario)
 
-@app.route('/citas/update/<int:id>', methods=['GET','POST'])
-def update_cita(id):
-    valores = [
-           4500, 3500, 2500]
-    cita_update = Cita.query.get(id)
-    
-    
-    if(request.method == 'GET'):
-        pacientes = Paciente.query.all()
-        medicos = Medico.query.all()
-        consultorios = Consultorio.query.all()
-        return render_template('cita_update.html' , 
-                                cita_update = cita_update, 
-                                valores = valores, pacientes = pacientes, medicos = medicos, consultorios = consultorios)
-    elif(request.method == 'POST'):
-        
-        cita_update.fecha = datetime.strptime(request.form['fecha'], "%Y-%m-%dT%H:%M")
-        cita_update.paciente_id = request.form['pa']
-        cita_update.medico_id = request.form['med']
-        cita_update.consultorio_id = request.form['con']
-        cita_update.valor = request.form['val']
-        db.session.commit()
-        flash('La Cita A Sido Actualizada')
-        return redirect('/citas')
-    
-@app.route('/citas/delete/<int:id>', methods=['GET','POST'])
-def delete_cita(id):
-    cita_delete = Cita.query.get(id)
-    db.session.delete(cita_delete)
-    db.session.commit()
-    flash('La Cita A Sido Eliminada')
-    return redirect('/citas')
+# Rutas para los envíos
+@app.route("/envios")
+def get_all_envios():
+    envios = Envio.query.all()
+    return render_template("envios.html", envios=envios)
+
+@app.route("/envios/<int:id>")
+def get_envio_by_id(id):
+    envio = Envio.query.get(id)
+    return render_template("envio.html", env=envio)
+
+# Rutas para los pagos
+@app.route("/pagos")
+def get_all_pagos():
+    pagos = Pago.query.all()
+    return render_template("pagos.html", pagos=pagos)
+
+@app.route("/pagos/<int:id>")
+def get_pago_by_id(id):
+    pago = Pago.query.get(id)
+    return render_template("pago.html", pag=pago)
+
+# Rutas para los proveedores
+@app.route("/proveedores")
+def get_all_proveedores():
+    proveedores = Proveedor.query.all()
+    return render_template("proveedores.html", proveedores=proveedores)
+
+@app.route("/proveedores/<int:id>")
+def get_proveedor_by_id(id):
+    proveedor = Proveedor.query.get(id)
+    return render_template("proveedor.html", prov=proveedor)
 
         
         

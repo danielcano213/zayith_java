@@ -1,53 +1,93 @@
-#necesitamos a sqlAlchemy
-#Definir los atributos de objeto 
-#pero con tipos traducibles a SQL y mysql
-
-from app import db
+from . import db
 from datetime import datetime
 
-class Medico(db.Model):
-    __tablename__ = 'medicos'
-    id = db.Column(db.Integer, primary_key = True)
-    nombre = db.Column(db.String(120), nullable = True)
-    apellido = db.Column(db.String(120), nullable = True)
-    tipo_identificacion = db.Column(db.String(4), nullable = True)
-    numero_identificacion = db.Column(db.Integer)
-    registro_medico = db.Column(db.Integer)
-    especialidad = db.Column(db.String(50))
+class Camiseta(db.Model):
+    __tablename__ = 'camisetas'
+    id = db.Column(db.Integer, primary_key=True)
+    marca = db.Column(db.String(100), nullable=False)
+    color = db.Column(db.String(50), nullable=False)
+    talla = db.Column(db.String(10), nullable=False)
+    material = db.Column(db.String(100), nullable=False)
+    precio = db.Column(db.Float, nullable=False)
+    pedidos = db.relationship("Pedido", backref="camiseta")
 
-    citas = db.relationship("Cita" , backref = "medico")
+class Pantalon(db.Model):
+    __tablename__ = 'pantalones'
+    id = db.Column(db.Integer, primary_key=True)
+    marca = db.Column(db.String(100), nullable=False)
+    color = db.Column(db.String(50), nullable=False)
+    talla = db.Column(db.String(10), nullable=False)
+    material = db.Column(db.String(100), nullable=False)
+    precio = db.Column(db.Float, nullable=False)
+    pedidos = db.relationship("Pedido", backref="pantalon")
 
+class Chaqueta(db.Model):
+    __tablename__ = 'chaquetas'
+    id = db.Column(db.Integer, primary_key=True)
+    marca = db.Column(db.String(100), nullable=False)
+    color = db.Column(db.String(50), nullable=False)
+    talla = db.Column(db.String(10), nullable=False)
+    material = db.Column(db.String(100), nullable=False)
+    precio = db.Column(db.Float, nullable=False)
+    pedidos = db.relationship("Pedido", backref="chaqueta")
 
-class Paciente(db.Model):
-    __tablename__ = 'pacientes' 
-    id = db.Column(db.Integer, primary_key = True)
-    nombre = db.Column(db.String(120), nullable = True)
-    apellido = db.Column(db.String(120), nullable = True)
-    tipo_identificacion = db.Column(db.String(4), nullable = True)
-    numero_identificacion = db.Column(db.Integer)
-    altura = db.Column(db.Integer)
-    tipo_sangre = db.Column(db.String(2))
+class Cliente(db.Model):
+    __tablename__ = 'clientes'
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    apellido = db.Column(db.String(100), nullable=False)
+    correo = db.Column(db.String(100), nullable=False, unique=True)
+    telefono = db.Column(db.String(20), nullable=False)
+    direccion = db.Column(db.String(255), nullable=False)
+    pedidos = db.relationship("Pedido", backref="cliente")
 
-    citas = db.relationship("Cita" , backref = "paciente")
+class Pedido(db.Model):
+    __tablename__ = 'pedidos'
+    id = db.Column(db.Integer, primary_key=True)
+    fecha_pedido = db.Column(db.DateTime, default=datetime.utcnow)
+    cliente_id = db.Column(db.Integer, db.ForeignKey('clientes.id'))
+    camiseta_id = db.Column(db.Integer, db.ForeignKey('camisetas.id'))
+    pantalon_id = db.Column(db.Integer, db.ForeignKey('pantalones.id'))
+    chaqueta_id = db.Column(db.Integer, db.ForeignKey('chaquetas.id'))
+    cantidad = db.Column(db.Integer, nullable=False)
+    total = db.Column(db.Float, nullable=False)
 
-class Consultorio(db.Model):
-    __tablename__ = 'consultorios'
-    id = db.Column(db.Integer, primary_key = True)
-    numero = db.Column(db.Integer)
+class Tienda(db.Model):
+    __tablename__ = 'tiendas'
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    direccion = db.Column(db.String(255), nullable=False)
 
-    citas = db.relationship("Cita" , backref = "consultorio")
-    
-class Cita(db.Model):
-    __tablename__ = 'citas'
-    id = db.Column(db.Integer, primary_key = True)
-    fecha = db.Column(db.DateTime, default = datetime.utcnow)
-    paciente_id = db.Column(db.Integer, db.ForeignKey('pacientes.id'))
-    medico_id = db.Column(db.Integer, db.ForeignKey('medicos.id'))
-    consultorio_id = db.Column(db.Integer, db.ForeignKey('consultorios.id'))
-    valor = db.Column(db.Integer)
-    
+class InventarioTienda(db.Model):
+    __tablename__ = 'inventario_tienda'
+    id = db.Column(db.Integer, primary_key=True)
+    tienda_id = db.Column(db.Integer, db.ForeignKey('tiendas.id'))
+    camiseta_id = db.Column(db.Integer, db.ForeignKey('camisetas.id'))
+    pantalon_id = db.Column(db.Integer, db.ForeignKey('pantalones.id'))
+    chaqueta_id = db.Column(db.Integer, db.ForeignKey('chaquetas.id'))
+    cantidad_camiseta = db.Column(db.Integer, default=0)
+    cantidad_pantalon = db.Column(db.Integer, default=0)
+    cantidad_chaqueta = db.Column(db.Integer, default=0)
 
-'''
-for ci in Cita.query.all():                                                                                                            
-    print("fecha:" + str(ci.fecha) + "|paciente identificacion:" + str(ci.paciente.numero_identificacion) + ",paciente nombre:" + ci.paciente.nombre + " " + ci.paciente.apellido + 'valor cita: ' + str(ci.valor)) 
-'''
+class Envio(db.Model):
+    __tablename__ = 'envios'
+    id = db.Column(db.Integer, primary_key=True)
+    pedido_id = db.Column(db.Integer, db.ForeignKey('pedidos.id'))
+    fecha_envio = db.Column(db.DateTime, default=datetime.utcnow)
+    direccion_destino = db.Column(db.String(255), nullable=False)
+
+class Pago(db.Model):
+    __tablename__ = 'pagos'
+    id = db.Column(db.Integer, primary_key=True)
+    pedido_id = db.Column(db.Integer, db.ForeignKey('pedidos.id'))
+    monto = db.Column(db.Float, nullable=False)
+    fecha_pago = db.Column(db.DateTime, default=datetime.utcnow)
+    metodo_pago = db.Column(db.String(100), nullable=False)
+
+class Proveedor(db.Model):
+    __tablename__ = 'proveedores'
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    telefono = db.Column(db.String(20), nullable=False)
+    direccion = db.Column(db.String(255), nullable=False)
+
